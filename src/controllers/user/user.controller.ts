@@ -83,7 +83,7 @@ export const userController = {
   update: async (req: Request, res: Response) => {
     const userId = req.params.id
     const data: IUser = req.body
-    const { username, fullName, phone, email } = data
+    const { username, fullName, phone, email, totalBill } = data
 
     try {
       if (!userId) {
@@ -102,7 +102,13 @@ export const userController = {
         return
       }
 
-      const user = await userService.updateUser(userId, { username, fullName, email, phone: phone as string })
+      const user = await userService.updateUser(userId, {
+        username,
+        fullName,
+        email,
+        phone: phone as string,
+        totalBill
+      })
       if (!user) {
         res.status(HttpStatus.BAD_REQUEST).json({
           message: 'User already exists'
