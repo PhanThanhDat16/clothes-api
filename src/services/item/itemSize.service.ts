@@ -37,6 +37,32 @@ export const itemSizeService = {
   },
 
   findAndUpdate: async (itemId: string, size: string, quantity: number) => {
-    await ItemSize.findOneAndUpdate({ itemId, size }, { $inc: { stockQuantity: quantity } })
+    return await ItemSize.findOneAndUpdate({ itemId, size }, { $inc: { stockQuantity: quantity } })
+  },
+
+  updateStock: async (item: { itemId: string; size: string; quantity: number }, type: string) => {
+    const itemSize = await ItemSize.findOne({ itemId: item.itemId, size: item.size }).lean()
+
+    if (!itemSize) {
+      throw new Error(`Item size not found for itemId=${item.itemId}, size=${item.size}`)
+    }
+
+    let newStock
+    if (type === 'plus') {
+      newStock = itemSize.stockQuantity - item.quantity
+      if (newStock < 0) {
+        throw new Error(`Not enough stock for itemId=${item.itemId}, size=${item.size}`)
+      }
+    } else {
+      newStock = itemSize.stockQuantity + item.quantity
+    }
+
+    const updated = await ItemSize.findOneAndUpdate(
+      { itemId: item.itemId, size: item.size },
+      { $set: { stockQuantity: newStock } },
+      { new: true }
+    ).lean()
+
+    return updated?.stockQuantity
   }
 }

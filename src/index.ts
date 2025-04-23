@@ -19,6 +19,7 @@ import { routerVoucher } from './routers/voucherAPI.router'
 import connectMongoDB from './config/mongoose.config'
 
 import { setupSocket } from './socket/socket'
+import { routerNotification } from './routers/notificationAPI.router'
 
 dotenv.config()
 
@@ -34,6 +35,9 @@ app.use(morgan('common'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
+// SETUP SOCKET
+setupSocket(server)
+
 // ROUTER
 app.use('/api/auth', routerAuth)
 app.use('/api/user', routerUser)
@@ -42,10 +46,8 @@ app.use('/api/category', routerCategory)
 app.use('/api/cart', routerCart)
 app.use('/api/order', routerOrder)
 app.use('/api/voucher', routerVoucher)
+app.use('/api/notification', routerNotification)
 app.use('/api/upload', routerUpload)
-
-// SETUP SOCKET
-setupSocket(server)
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is running on port ${process.env.PORT}`)

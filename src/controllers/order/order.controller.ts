@@ -54,8 +54,15 @@ export const orderController = {
           price: itemDoc.price || 0
         })
 
-        // Cập nhật số lượng tồn kho sau khi tạo đơn hàng  dùng socket để cập nhật
-        // await itemSizeService.updateStock(itemSize._id, itemSize.stockQuantity - item.quantity)
+        // update stock
+        await itemSizeService.updateStock(
+          {
+            itemId: item.itemId,
+            size: item.size,
+            quantity: item.quantity
+          },
+          'plus'
+        )
       })
 
       await Promise.all(itemPromises)
@@ -138,7 +145,7 @@ export const orderController = {
 
       if ((order.status === 'confirmed' || order.status === 'paid') && status === 'pending') {
         res.status(HttpStatus.BAD_REQUEST).json({
-          message: 'Invalid state change'
+          message: 'Cannot change state'
         })
         return
       }
@@ -154,6 +161,7 @@ export const orderController = {
       res.status(HttpStatus.OK).json({
         message: 'Order status has been updated'
       })
+      return
     } catch (error) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error', error })
       return

@@ -13,10 +13,9 @@ export const categoryController = {
   createCategory: async (req: Request, res: Response) => {
     try {
       const data = req.body
-      const { name } = data
 
-      const validate: string = categoryValidation(name)
-      if (validate.trim() !== '') {
+      const validate = categoryValidation(data)
+      if (Object.keys(validate).length > 0) {
         res.status(HttpStatus.BAD_REQUEST).json({ message: 'Validation error', error: validate })
         return
       }
@@ -108,8 +107,8 @@ export const categoryController = {
         return
       }
 
-      const validate: string = categoryValidation(data.name)
-      if (validate.trim() !== '') {
+      const validate = categoryValidation(data)
+      if (Object.keys(validate).length > 0) {
         res.status(HttpStatus.BAD_REQUEST).json({ message: 'Validation error', error: validate })
         return
       }
