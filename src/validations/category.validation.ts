@@ -1,6 +1,12 @@
-export const categoryValidation = (name: string) => {
+import { ICategoryConstants } from '@/constants/category.constants'
+
+export const categoryValidation = (data: ICategoryConstants) => {
   let error = ''
-  if (!name || name.trim() === '') {
+  if (!data.name || data.name.trim() === '') {
+    error = 'name is required'
+  }
+
+  if (!data.description || data.description.trim() === '') {
     error = 'name is required'
   }
 
