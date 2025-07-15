@@ -12,6 +12,7 @@ export const itemSizeService = {
     }))
 
     await ItemSize.insertMany(docs)
+    return true
   },
 
   findOne: async (itemId: string, size: EStatusItemSize) => {

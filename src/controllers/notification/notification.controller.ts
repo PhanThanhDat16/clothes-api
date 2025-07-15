@@ -1,73 +1,53 @@
+import { Request, Response } from 'express'
+import asyncHandler from 'express-async-handler'
+
 import { HttpStatus } from '@/constants/http.constants'
 import { notificationService } from '@/services/notification/notification.service'
-import { Request, Response } from 'express'
 
 export const notificationController = {
-  getDetail: async (req: Request, res: Response) => {
+  getDetail: asyncHandler(async (req: Request, res: Response) => {
     const notiId = req.params.id
-    try {
-      const notification = await notificationService.getDetail(notiId)
-      if (!notification) {
-        res.status(HttpStatus.NOT_FOUND).json({ message: 'the notification id not found' })
-        return
-      }
 
-      res.status(HttpStatus.OK).json({ data: notification })
-      return
-    } catch (error) {
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error', error })
+    const notification = await notificationService.getDetail(notiId)
+    if (!notification) {
+      res.status(HttpStatus.NOT_FOUND).json({ message: 'the notification id not found' })
       return
     }
-  },
 
-  updateStatusNoti: async (req: Request, res: Response) => {
+    res.status(HttpStatus.OK).json({ message: 'Get notification detail', data: notification })
+  }),
+
+  updateStatusNoti: asyncHandler(async (req: Request, res: Response) => {
     const notiId = req.params.id
-    try {
-      const noti = await notificationService.updateNoti(notiId)
-      if (!noti) {
-        res.status(HttpStatus.NOT_FOUND).json({ message: 'NotificationId not found' })
-        return
-      }
 
-      res.status(HttpStatus.OK).json({ message: 'updated  successfully' })
-      return
-    } catch (error) {
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error', error })
+    const noti = await notificationService.updateNoti(notiId)
+    if (!noti) {
+      res.status(HttpStatus.NOT_FOUND).json({ message: 'NotificationId not found' })
       return
     }
-  },
 
-  updateReadAll: async (req: Request, res: Response) => {
+    res.status(HttpStatus.OK).json({ message: 'updated successfully', data: noti })
+  }),
+
+  updateReadAll: asyncHandler(async (req: Request, res: Response) => {
     const userId = req.params.id
-    try {
-      const noti = await notificationService.updateReadAll(userId)
-      if (!noti) {
-        res.status(HttpStatus.NOT_FOUND).json({ message: 'userId not found' })
-        return
-      }
-
-      res.status(HttpStatus.OK).json({ message: 'updated  successfully' })
-      return
-    } catch (error) {
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error', error })
+    const noti = await notificationService.updateReadAll(userId)
+    if (!noti) {
+      res.status(HttpStatus.NOT_FOUND).json({ message: 'userId not found' })
       return
     }
-  },
 
-  getNotiListUser: async (req: Request, res: Response) => {
+    res.status(HttpStatus.OK).json({ message: 'updated successfully', data: noti })
+  }),
+
+  getNotiListUser: asyncHandler(async (req: Request, res: Response) => {
     const userId = req.params.id
-    try {
-      const notiList = await notificationService.getListByUser(userId)
-      if (!notiList) {
-        res.status(HttpStatus.NOT_FOUND).json({ message: 'user not found' })
-        return
-      }
-
-      res.status(HttpStatus.OK).json({ data: notiList })
-      return
-    } catch (error) {
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error', error })
+    const notiList = await notificationService.getListByUser(userId)
+    if (!notiList) {
+      res.status(HttpStatus.NOT_FOUND).json({ message: 'user not found' })
       return
     }
-  }
+
+    res.status(HttpStatus.OK).json({ message: 'Get notification by user successfully', data: notiList })
+  })
 }

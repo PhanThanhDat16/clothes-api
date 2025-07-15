@@ -25,6 +25,6 @@ export const orderService = {
   },
 
   deleteById: async (orderId: string) => {
-    await Order.findByIdAndDelete(orderId)
+    return await Order.findByIdAndDelete(orderId)
   }
 }
