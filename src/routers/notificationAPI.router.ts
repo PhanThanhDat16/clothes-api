@@ -3,9 +3,11 @@ import { notificationController } from '@/controllers/notification/notification.
 import { requireAuth } from '@/middlewares/auth.middlewares'
 
 const router = express.Router()
-router.get('/detail/:id', requireAuth, notificationController.getDetail)
+
+router.get('/:id', requireAuth, notificationController.getDetail)
 router.put('/:id', requireAuth, notificationController.updateStatusNoti)
-router.post('/read-all/:id', requireAuth, notificationController.updateReadAll)
-router.get('/list/user/:id', requireAuth, notificationController.getNotiListUser)
+router.get('/user/:id', requireAuth, notificationController.getNotiListUser)
+// router.post('/read-all/:id', requireAuth, notificationController.updateReadAll)
+router.post('/read-all', requireAuth, notificationController.updateReadAll)
 
 export const routerNotification = router

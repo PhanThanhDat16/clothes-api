@@ -62,9 +62,9 @@ export const itemService = {
   },
 
   deleteById: async (itemId: string) => {
-    await Item.findByIdAndDelete(itemId)
+    const itemDelete = await Item.findByIdAndDelete(itemId)
     await ItemSize.deleteMany({ itemId })
-    return true
+    return itemDelete
   },
 
   updateById: async (itemId: string, data: IItemModelConstants) => {

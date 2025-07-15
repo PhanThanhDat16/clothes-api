@@ -1,5 +1,5 @@
 // Libs
-import express from 'express'
+import express, { NextFunction, Request, Response } from 'express'
 import dotenv from 'dotenv'
 import cors from 'cors'
 import morgan from 'morgan'
@@ -20,6 +20,7 @@ import connectMongoDB from './config/mongoose.config'
 
 import { setupSocket } from './socket/socket'
 import { routerNotification } from './routers/notificationAPI.router'
+import { HttpStatus } from './constants/http.constants'
 
 dotenv.config()
 
@@ -40,14 +41,20 @@ setupSocket(server)
 
 // ROUTER
 app.use('/api/auth', routerAuth)
-app.use('/api/user', routerUser)
-app.use('/api/item', routerItem)
-app.use('/api/category', routerCategory)
+app.use('/api/users', routerUser)
+app.use('/api/items', routerItem)
+app.use('/api/categories', routerCategory)
 app.use('/api/cart', routerCart)
-app.use('/api/order', routerOrder)
-app.use('/api/voucher', routerVoucher)
-app.use('/api/notification', routerNotification)
+app.use('/api/orders', routerOrder)
+app.use('/api/vouchers', routerVoucher)
+app.use('/api/notifications', routerNotification)
 app.use('/api/upload', routerUpload)
+
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+    message: err.message || 'Internal Server Error'
+  })
+})
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is running on port ${process.env.PORT}`)
