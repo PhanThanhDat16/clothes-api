@@ -5,8 +5,9 @@ import bcrypt from 'bcrypt'
 import { User } from '@/models/user.model'
 
 export const authService = {
-  checkLoginAuth: async (username: string, password: string) => {
-    const existingUser = await User.findOne({ username }).lean()
+  checkLoginAuth: async (email: string, password: string) => {
+    const existingUser = await User.findOne({ email }).lean()
+
     if (!existingUser) return false
 
     const passwordMatch = await bcrypt.compare(password, existingUser.password as string)
@@ -15,8 +16,8 @@ export const authService = {
     return existingUser
   },
 
-  findOne: async (username: string) => {
-    const existingUser = await User.findOne({ username }).lean()
+  findOne: async (email: string) => {
+    const existingUser = await User.findOne({ email }).lean()
     if (!existingUser) return false
 
     return existingUser

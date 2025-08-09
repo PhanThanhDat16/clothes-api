@@ -1,8 +1,8 @@
 import { RefreshToken } from '@/models/refreshToken.model'
 
 export const refreshTokenService = {
-  save: async (token: string, username: string) => {
-    return await RefreshToken.create({ token, username })
+  save: async (token: string, email: string) => {
+    return await RefreshToken.create({ token, email })
   },
 
   exists: async (token: string) => {
@@ -13,7 +13,7 @@ export const refreshTokenService = {
     return await RefreshToken.deleteOne({ token })
   },
 
-  deleteAllForUser: async (username: string) => {
-    return await RefreshToken.deleteMany({ username })
+  deleteAllForUser: async (email: string) => {
+    return await RefreshToken.deleteMany({ email })
   }
 }

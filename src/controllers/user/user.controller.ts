@@ -18,29 +18,39 @@ import { IUser } from '@/models/user.model'
 export const userController = {
   register: asyncHandler(async (req: Request, res: Response) => {
     const data: IUser = req.body
-    const { username, password, fullName, phone } = data
+    const { email, password, fullName, phone, type = 'user' } = data
 
-    console.log(data)
-
-    const validation = userValidation.validateRegister({ username, password, fullName, phone: phone as string })
+    const validation = userValidation.validateRegister({
+      email: email as string,
+      password,
+      fullName,
+      phone: phone as string
+    })
     if (Object.keys(validation).length > 0) {
       res.status(HttpStatus.BAD_REQUEST).json({
         message: 'Validation error',
-        errors: validation
+        error: validation
       })
       return
     }
 
-    data.password = await bcrypt.hash(password, 10)
-    const user = await userService.registerUser(data)
+    const hashedPassword = await bcrypt.hash(password, 10)
+    const user = await userService.registerUser({
+      email: email as string,
+      password: hashedPassword,
+      fullName,
+      phone: phone as string,
+      type
+    })
     if (!user) {
       res.status(HttpStatus.BAD_REQUEST).json({
-        message: 'User already exists'
+        message: 'User already exists',
+        error: 'User already exists'
       })
       return
     }
 
-    res.status(HttpStatus.OK).json({ message: 'register successfully', data: user })
+    res.status(HttpStatus.OK).json({ message: 'register successfully' })
   }),
 
   profile: asyncHandler(async (req: Request, res: Response) => {
@@ -71,7 +81,7 @@ export const userController = {
   update: asyncHandler(async (req: Request, res: Response) => {
     const userId = req.params.id
     const data: IUser = req.body
-    const { username, fullName, phone, email, totalBill } = data
+    const { fullName, phone, email, totalBill } = data
 
     if (!userId) {
       res.status(HttpStatus.BAD_REQUEST).json({
@@ -80,7 +90,7 @@ export const userController = {
       return
     }
 
-    const validation = userValidation.validateUpdate({ username, fullName, phone: phone as string })
+    const validation = userValidation.validateUpdate({ email, fullName, phone: phone as string })
     if (Object.keys(validation).length > 0) {
       res.status(HttpStatus.BAD_REQUEST).json({
         message: 'Validation error',
@@ -90,7 +100,6 @@ export const userController = {
     }
 
     const user = await userService.updateUser(userId, {
-      username,
       fullName,
       email,
       phone: phone as string,

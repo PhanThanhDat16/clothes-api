@@ -17,20 +17,20 @@ import { refreshTokenService } from '@/services/refreshToken/refreshToken.servic
 export const authController = {
   login: asyncHandler(async (req: Request, res: Response) => {
     const data = req.body
-    const { username, password } = data
-    const validation = authValidation(username, password)
+    const { email, password } = data
+    const validation = authValidation(email, password)
     if (Object.keys(validation).length > 0) {
       res.status(HttpStatus.BAD_REQUEST).json({ message: 'Validation error', errors: validation })
       return
     }
 
-    const userCheckLogin = await authService.checkLoginAuth(username, password)
+    const userCheckLogin = await authService.checkLoginAuth(email, password)
     if (!userCheckLogin) {
-      res.status(HttpStatus.BAD_REQUEST).json({ message: 'Incorrect username or password' })
+      res.status(HttpStatus.BAD_REQUEST).json({ message: 'Incorrect email or password' })
       return
     }
 
-    const inforUser = await authService.findOne(username)
+    const inforUser = await authService.findOne(email)
     if (!inforUser) {
       res.status(HttpStatus.BAD_REQUEST).json({ message: 'User not found' })
       return
@@ -39,7 +39,6 @@ export const authController = {
 
     const dataToken = {
       id: userCheckLogin._id.toString(),
-      username: userCheckLogin.username,
       email: userCheckLogin.email,
       fullName: userCheckLogin.fullName,
       phone: userCheckLogin.phone
@@ -48,8 +47,10 @@ export const authController = {
     const refreshToken = await authController.generateRefreshToken(dataToken as IAuthConstants)
     res.status(HttpStatus.OK).json({
       message: 'Login successfulfly',
-      accessToken,
-      refreshToken
+      data: {
+        accessToken,
+        refreshToken
+      }
     })
   }),
 
@@ -103,7 +104,7 @@ export const authController = {
       expiresIn: parseInt(process.env.EXPIRES_REFRESHTOKEN as string)
     })
 
-    await refreshTokenService.save(refreshToken, user.username)
+    await refreshTokenService.save(refreshToken, user.email)
 
     return refreshToken
   }

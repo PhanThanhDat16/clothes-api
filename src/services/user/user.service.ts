@@ -1,21 +1,19 @@
-import { IUser, User } from '@/models/user.model'
+import { IUserRegister, User } from '@/models/user.model'
 import { IUserConstants } from '@/constants/user.constants'
 
 export const userService = {
-  registerUser: async (userData: IUser) => {
-    const existingUser = await User.findOne({ username: userData.username }).lean()
+  registerUser: async (userData: IUserRegister) => {
+    const existingUser = await User.findOne({ email: userData.email }).lean()
     if (existingUser) return false
 
     const newUser = new User({
       ...userData,
-      type: 'user',
-      email: '',
       totalBill: 0
     })
 
     await newUser.save()
-    const { username, fullName, phone } = newUser
-    return { username, fullName, phone }
+    const { email, fullName, phone } = newUser
+    return { email, fullName, phone }
   },
 
   getUserById: async (userId: string) => {
