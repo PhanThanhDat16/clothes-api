@@ -1,11 +1,8 @@
 // Libs
 import mongoose, { Document } from 'mongoose'
 
-import { EStatusTypeUser } from '@/constants/user.constants'
-
 const userSchema = new mongoose.Schema(
   {
-    username: { type: String, require: true, unique: true, maxlength: 100 },
     password: { type: String, require: true, maxlength: 255 },
     email: { type: String, unique: true, maxlength: 100 },
     fullName: { type: String, require: true, maxlength: 100 },
@@ -24,11 +21,19 @@ userSchema.index({ username: 1, email: 1 })
 
 export const User = mongoose.model('User', userSchema)
 export interface IUser extends Document {
-  username: string
   password: string
   email?: string
   fullName: string
   phone?: string
-  type?: EStatusTypeUser
+  type?: 'user' | 'admin'
+  totalBill?: number
+}
+
+export interface IUserRegister {
+  password: string
+  email: string
+  fullName: string
+  phone: string
+  type: 'user' | 'admin'
   totalBill?: number
 }

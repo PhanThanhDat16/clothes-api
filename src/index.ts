@@ -7,13 +7,13 @@ import http from 'http'
 
 // Routers
 import { routerAuth } from './routers/authAPI.router'
-import { routerUser } from './routers/userAPI.router'
 import { routerItem } from './routers/itemAPI.router'
 import { routerCategory } from './routers/categoryAPI.router'
 import { routerCart } from './routers/cartAPI.router'
 import { routerUpload } from './routers/uploadAPI.router'
 import { routerOrder } from './routers/orderAPI.router'
 import { routerVoucher } from './routers/voucherAPI.router'
+import { routerUser } from './routers/userAPI.router'
 
 // config
 import connectMongoDB from './config/mongoose.config'

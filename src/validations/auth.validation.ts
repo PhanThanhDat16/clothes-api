@@ -1,11 +1,11 @@
-export const authValidation = (username: string, password: string) => {
+export const authValidation = (email: string, password: string) => {
   const errors: {
-    username?: string
+    email?: string
     password?: string
   } = {}
 
-  if (!username || username.trim() === '') {
-    errors.username = 'Username is required'
+  if (!email || email.trim() === '') {
+    errors.email = 'Email is required'
   }
 
   if (!password || password.trim() === '') {
