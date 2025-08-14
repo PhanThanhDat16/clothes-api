@@ -17,8 +17,6 @@ const userSchema = new mongoose.Schema(
   }
 )
 
-userSchema.index({ email: 1 })
-
 export const User = mongoose.model('User', userSchema)
 export interface IUser extends Document {
   password: string
