@@ -11,9 +11,9 @@ export const voucherValidation = {
       errors.code = 'Code is required'
     }
 
-    if (!isNaN(Number(data.discountPercent))) {
-      errors.discountPercent = 'discount is number'
-    }
+    // if (!isNaN(Number(data.discountPercent))) {
+    //   errors.discountPercent = 'discount is number'
+    // }
 
     return errors
   }
