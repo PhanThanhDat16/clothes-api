@@ -16,7 +16,7 @@ git clone https://github.com/PhanThanhDat16/clothes-api.git
 2. Navigate to the project directory:
 
 ```sh
-cd api
+cd clothes-api
 ```
 
 3. Install the dependencies:
@@ -33,7 +33,7 @@ npm install
 npm run dev
 ```
 
-2. The server will start on `http://localhost:3000`.
+2. The server will start on `http://localhost:5000`.
 
 ### Lint with [ESLint](https://eslint.org/)
 
