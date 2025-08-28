@@ -8,6 +8,7 @@ router.get('/', requireAuth, userController.getAllUser)
 router.get('/profile', requireAuth, userController.profile)
 router.post('/register', userController.register)
 router.put('/:id', requireAuth, userController.update)
+router.delete('/:id', requireAuth, userController.deleteUser)
 // router.get('/profile/:id', requireAuth, userController.profile)
 
 export const routerUser = router
