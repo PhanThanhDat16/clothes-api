@@ -2,7 +2,6 @@
 import bcrypt from 'bcrypt'
 import { Request, Response } from 'express'
 import asyncHandler from 'express-async-handler'
-
 // Services
 import { userService } from '@/services/user/user.service'
 
@@ -13,10 +12,11 @@ import { HttpStatus } from '@/constants/http.constants'
 import { userValidation } from '@/validations/user.validation'
 
 // Models
-import { IUser } from '@/models/user.model'
+import { IUser, User } from '@/models/user.model'
 
 export const userController = {
   register: asyncHandler(async (req: Request, res: Response) => {
+    console.log('Register data:', req.body)
     const data: IUser = req.body
     const { email, password, fullName, phone, type = 'user' } = data
 
@@ -35,6 +35,7 @@ export const userController = {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10)
+    
     const user = await userService.registerUser({
       email: email as string,
       password: hashedPassword,
@@ -121,5 +122,21 @@ export const userController = {
       message: 'Get all user successfully',
       data: users
     })
-  })
+  }),
+
+currentUser: asyncHandler(async (req: Request, res: Response) => {
+    if (!req.user) {
+      res.status(HttpStatus.UNAUTHORIZED).json({
+        message: 'User not authenticated'
+      })
+      return
+    }
+    const userWithId = req.user as Express.User & { id: string }
+    const user = await userService.getUserById(userWithId.id);
+
+    res.status(HttpStatus.OK).json({
+      message: 'Get current user successfully',
+      data: user
+    })
+  }),
 }
