@@ -117,13 +117,20 @@ export const userController = {
   }),
 
   getAllUser: asyncHandler(async (req: Request, res: Response) => {
-    const users = await userService.getAll()
+    const page = Number(req.query.page) || 1
+    const limit = Number(req.query.limit) || 10
+    const search = (req.query.search as string) || ''
+    const result = await userService.getAll(page, limit, search)
+
     res.status(HttpStatus.OK).json({
       message: 'Get all user successfully',
-      data: users
+      data: {
+        ...result
+      }
     })
   }),
 
+// feature/develop-login-google
 currentUser: asyncHandler(async (req: Request, res: Response) => {
     if (!req.user) {
       res.status(HttpStatus.UNAUTHORIZED).json({
@@ -139,4 +146,25 @@ currentUser: asyncHandler(async (req: Request, res: Response) => {
       data: user
     })
   }),
+
+  deleteUser: asyncHandler(async (req: Request, res: Response) => {
+    const userId = req.params.id
+    if (!userId) {
+      res.status(HttpStatus.NOT_FOUND).json({
+        message: 'user id is required'
+      })
+      return
+    }
+
+    const user = await userService.delete(userId)
+    if (!user) {
+      res.status(HttpStatus.NOT_FOUND).json({
+        message: 'user not found'
+      })
+      return
+    }
+
+    res.status(HttpStatus.OK).json({ message: 'deleted successfully', data: user })
+  })
+
 }

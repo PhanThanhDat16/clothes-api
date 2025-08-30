@@ -101,10 +101,16 @@ export const categoryController = {
   }),
 
   getAllCategory: asyncHandler(async (req: Request, res: Response) => {
-    const categories = await categoryService.getAll()
+    const page = Number(req.query.page) || 1
+    const limit = Number(req.query.limit) || 10
+    const search = (req.query.search as string) || ''
+    const result = await categoryService.getAll(page, limit, search)
+
     res.status(HttpStatus.OK).json({
       message: 'Get all category successfully',
-      data: categories
+      data: {
+        ...result
+      }
     })
   })
 }

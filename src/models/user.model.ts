@@ -3,8 +3,8 @@ import mongoose, { Document } from 'mongoose'
 
 const userSchema = new mongoose.Schema(
   {
-    password: { type: String, require: true, maxlength: 255 },
     email: { type: String, unique: true, maxlength: 100 },
+    password: { type: String, require: true, maxlength: 255 },
     fullName: { type: String, require: true, maxlength: 100 },
     type: { type: String, enum: ['user', 'admin'], default: 'user' },
     provider: {type: String, default: 'local'},

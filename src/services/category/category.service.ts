@@ -3,7 +3,9 @@ import { ICategoryConstants } from '@/constants/category.constants'
 
 export const categoryService = {
   create: async (data: ICategoryConstants) => {
-    const existingCategory = await Category.findOne({ name: data.name }).lean()
+    const existingCategory = await Category.findOne({
+      name: { $regex: new RegExp(`^${data.name}$`, 'i') }
+    }).lean()
     if (existingCategory) return false
     return await Category.create(data)
   },
@@ -27,8 +29,21 @@ export const categoryService = {
     return await Category.findById(categoryId).lean()
   },
 
-  getAll: async () => {
-    const categories = await Category.find()
-    return categories
+  getAll: async (page: number, limit: number, search?: string) => {
+    const query: any = {}
+    if (search) {
+      query.name = { $regex: `^${search}`, $options: 'i' }
+    }
+    const skip = (page - 1) * limit
+    const total = await Category.countDocuments(query)
+    const categories = await Category.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit).lean()
+
+    return {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+      data: categories
+    }
   }
 }
