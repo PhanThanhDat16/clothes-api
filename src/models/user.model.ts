@@ -7,6 +7,8 @@ const userSchema = new mongoose.Schema(
     password: { type: String, require: true, maxlength: 255 },
     fullName: { type: String, require: true, maxlength: 100 },
     type: { type: String, enum: ['user', 'admin'], default: 'user' },
+    provider: {type: String, default: 'local'},
+    googleId: {type: String, default: ''},
     phone: { type: String, maxlength: 15 },
     totalBill: { type: Number, default: 0 }
   },

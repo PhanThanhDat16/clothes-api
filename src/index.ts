@@ -4,6 +4,8 @@ import dotenv from 'dotenv'
 import cors from 'cors'
 import morgan from 'morgan'
 import http from 'http'
+import initPassport from './config/passport.config'
+import passport, { Passport } from 'passport'
 
 // Routers
 import { routerAuth } from './routers/authAPI.router'
@@ -14,7 +16,7 @@ import { routerUpload } from './routers/uploadAPI.router'
 import { routerOrder } from './routers/orderAPI.router'
 import { routerVoucher } from './routers/voucherAPI.router'
 import { routerUser } from './routers/userAPI.router'
-
+import { authLoginGoogleRoute } from './routers/auth-google.router'
 // config
 import connectMongoDB from './config/mongoose.config'
 
@@ -50,6 +52,9 @@ app.use('/api/vouchers', routerVoucher)
 app.use('/api/notifications', routerNotification)
 app.use('/api/upload', routerUpload)
 
+app.use(passport.initialize());
+initPassport(passport);
+app.use("/api/auth/",authLoginGoogleRoute);
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
     message: err.message || 'Internal Server Error'
