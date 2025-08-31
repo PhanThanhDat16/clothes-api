@@ -78,38 +78,38 @@ export const voucherController = {
         user: process.env.AUTH_EMAIL,
         pass: process.env.AUTH_PASS
       }
-    });
+    })
 
     try {
-      await transposter.verify();
-      console.log('✅ Ready to send emails');
+      await transposter.verify()
+      console.log('✅ Ready to send emails')
     } catch (error) {
-      console.error('❌ Error verifying email transport:', error);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Email service is not available' });
+      console.error('❌ Error verifying email transport:', error)
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Email service is not available' })
     }
 
-    const {email, voucher_code} = req.body;
-    
-    if(!email || !voucher_code){
-      res.status(HttpStatus.BAD_REQUEST).json({ message: 'Email and voucher code are required' });
-      return;
-    }
-    
-    const voucher = await Voucher.findOne({code: voucher_code});
-    if(!voucher){
-      res.status(HttpStatus.NOT_FOUND).json({ message: 'Voucher not found!' });
-      return;
+    const { email, voucher_code } = req.body
+
+    if (!email || !voucher_code) {
+      res.status(HttpStatus.BAD_REQUEST).json({ message: 'Email and voucher code are required' })
+      return
     }
 
-    const emailExists = await User.findOne({email: email});
-    if(!emailExists){
-      res.status(HttpStatus.NOT_FOUND).json({ message: 'Email not found!. Please check email again' });
-      return;
+    const voucher = await Voucher.findOne({ code: voucher_code })
+    if (!voucher) {
+      res.status(HttpStatus.NOT_FOUND).json({ message: 'Voucher not found!' })
+      return
+    }
+
+    const emailExists = await User.findOne({ email: email })
+    if (!emailExists) {
+      res.status(HttpStatus.NOT_FOUND).json({ message: 'Email not found!. Please check email again' })
+      return
     }
 
     // ngày hết hạn
-    const expiryDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-    const formattedExpiryDate = expiryDate.toLocaleDateString('en-GB');
+    const expiryDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+    const formattedExpiryDate = expiryDate.toLocaleDateString('en-GB')
 
     // nội dung send email
     const emailHTML = `
@@ -130,24 +130,24 @@ export const voucherController = {
         <p style="margin-top: 30px;">Best regards,</p>
         <p style="font-weight: bold;">AUTHMANOR</p>
       </div>
-    `;
+    `
     const mailOptions = {
-      from: "AUTHMANOR",
+      from: 'AUTHMANOR',
       to: email,
       subject: '🎁 Your Exclusive Voucher is Here!',
-      html: emailHTML 
-    };
+      html: emailHTML
+    }
     try {
-      const infor = await transposter.sendMail(mailOptions);
+      const infor = await transposter.sendMail(mailOptions)
       await VoucherUsersGave.create({
         userId: emailExists._id,
         voucherId: voucher._id,
         date_end: formattedExpiryDate // Voucher valid for 30 days
-      });
-      res.status(HttpStatus.OK).json({ message: 'Voucher sent successfully'});
+      })
+      res.status(HttpStatus.OK).json({ message: 'Voucher sent successfully' })
     } catch (error) {
-      console.error('❌ Failed to send email:', error);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to send voucher email'});
+      console.error('❌ Failed to send email:', error)
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to send voucher email' })
     }
   })
 }

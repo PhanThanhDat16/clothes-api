@@ -2,7 +2,6 @@
 import bcrypt from 'bcrypt'
 import { Request, Response } from 'express'
 import asyncHandler from 'express-async-handler'
-
 // Services
 import { userService } from '@/services/user/user.service'
 
@@ -13,12 +12,11 @@ import { HttpStatus } from '@/constants/http.constants'
 import { userValidation } from '@/validations/user.validation'
 
 // Models
-import { IUser } from '@/models/user.model'
+import { IUser, User } from '@/models/user.model'
 import { IUserConstants } from '@/constants/user.constants'
 interface RequestWithUser extends Request {
   user?: { _id?: string; id?: string; [key: string]: any }
 }
-
 
 export const userController = {
   register: asyncHandler(async (req: Request, res: Response) => {
@@ -139,7 +137,24 @@ export const userController = {
       return
     }
     res.status(HttpStatus.OK).json({
-      message: 'Get category successfully',
+      message: 'Get category successfully'
+    })
+  }),
+
+  // feature/develop-login-google
+  currentUser: asyncHandler(async (req: RequestWithUser, res: Response) => {
+    if (!req.user) {
+      res.status(HttpStatus.UNAUTHORIZED).json({
+        message: 'User not authenticated'
+      })
+      return
+    }
+    // Fix: Remove reference to Express.User, use a safer type assertion
+    const userWithId = req.user as { id: string }
+    const user = await userService.getUserById(userWithId.id);
+
+    res.status(HttpStatus.OK).json({
+      message: 'Get current user successfully',
       data: user
     })
   }),
