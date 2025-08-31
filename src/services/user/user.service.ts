@@ -6,9 +6,13 @@ export const userService = {
     const existingUser = await User.findOne({ email: userData.email }).lean()
     if (existingUser) return false
 
+    const seed = encodeURIComponent(userData.email || userData.fullName)
+    const avatarUrl = `https://api.dicebear.com/7.x/identicon/svg?seed=${seed}`
+
     const newUser = new User({
       ...userData,
-      totalBill: 0
+      totalBill: 0,
+      avatar: avatarUrl
     })
 
     await newUser.save()
@@ -68,5 +72,10 @@ export const userService = {
   delete: async (userId: string) => {
     const user = await User.findByIdAndDelete(userId)
     return !!user
+  },
+
+  getDetail: async (userId: string) => {
+    const user = await User.findById(userId).select('-password').lean()
+    return user
   }
 }

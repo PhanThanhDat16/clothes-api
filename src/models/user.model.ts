@@ -3,6 +3,7 @@ import mongoose, { Document } from 'mongoose'
 
 const userSchema = new mongoose.Schema(
   {
+    avatar: { type: String },
     email: { type: String, unique: true, maxlength: 100 },
     password: { type: String, require: true, maxlength: 255 },
     fullName: { type: String, require: true, maxlength: 100 },
@@ -19,6 +20,7 @@ const userSchema = new mongoose.Schema(
 
 export const User = mongoose.model('User', userSchema)
 export interface IUser extends Document {
+  avatar?: string
   password: string
   email?: string
   fullName: string
@@ -28,6 +30,7 @@ export interface IUser extends Document {
 }
 
 export interface IUserRegister {
+  avatar?: string
   password: string
   email: string
   fullName: string

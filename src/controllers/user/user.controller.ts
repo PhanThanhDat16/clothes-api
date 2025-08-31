@@ -14,6 +14,11 @@ import { userValidation } from '@/validations/user.validation'
 
 // Models
 import { IUser } from '@/models/user.model'
+import { IUserConstants } from '@/constants/user.constants'
+interface RequestWithUser extends Request {
+  user?: { _id?: string; id?: string; [key: string]: any }
+}
+
 
 export const userController = {
   register: asyncHandler(async (req: Request, res: Response) => {
@@ -53,8 +58,8 @@ export const userController = {
     res.status(HttpStatus.OK).json({ message: 'register successfully' })
   }),
 
-  profile: asyncHandler(async (req: Request, res: Response) => {
-    const userId = req.params.id
+  profile: asyncHandler(async (req: RequestWithUser, res: Response) => {
+    const userId = req.user?.id || req.user?._id
     if (!userId) {
       res.status(HttpStatus.BAD_REQUEST).json({
         message: 'User id is required'
@@ -90,7 +95,7 @@ export const userController = {
       return
     }
 
-    const validation = userValidation.validateUpdate({ email, fullName, phone: phone as string })
+    const validation = userValidation.validateUpdate({ email, fullName })
     if (Object.keys(validation).length > 0) {
       res.status(HttpStatus.BAD_REQUEST).json({
         message: 'Validation error',
@@ -99,12 +104,7 @@ export const userController = {
       return
     }
 
-    const user = await userService.updateUser(userId, {
-      fullName,
-      email,
-      phone: phone as string,
-      totalBill
-    })
+    const user = await userService.updateUser(userId, data as IUserConstants)
     if (!user) {
       res.status(HttpStatus.BAD_REQUEST).json({
         message: 'User already exists'
@@ -126,6 +126,21 @@ export const userController = {
       data: {
         ...result
       }
+    })
+  }),
+
+  getUserDetail: asyncHandler(async (req: Request, res: Response) => {
+    const userId = req.params.id
+    const user = await userService.getDetail(userId)
+    if (!user) {
+      res.status(HttpStatus.NOT_FOUND).json({
+        message: 'user not found'
+      })
+      return
+    }
+    res.status(HttpStatus.OK).json({
+      message: 'Get category successfully',
+      data: user
     })
   }),
 

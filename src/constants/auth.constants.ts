@@ -3,4 +3,5 @@ export interface IAuthConstants {
   email: string
   fullName: string
   phone?: string
+  avatar?: string
 }

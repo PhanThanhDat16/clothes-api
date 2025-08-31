@@ -20,4 +20,4 @@ const fileFilter = (req: Request, file: Express.Multer.File, cb: FileFilterCallb
   }
 }
 
-export const upload = multer({ storage, fileFilter, limits: { files: 3 } })
+export const upload = multer({ storage, fileFilter, limits: { files: 1 } })

@@ -32,7 +32,6 @@ export const userValidation = {
     const errors: {
       email?: string
       fullName?: string
-      phone?: string
     } = {}
 
     if (!data.email || data.email.trim() === '') {
@@ -41,10 +40,6 @@ export const userValidation = {
 
     if (!data.fullName || data.fullName.trim() === '') {
       errors.fullName = 'Full name is required'
-    }
-
-    if (!data.phone || data.phone.trim() === '') {
-      errors.phone = 'Phone number is required'
     }
 
     return errors

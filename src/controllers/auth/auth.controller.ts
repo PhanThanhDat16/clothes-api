@@ -41,7 +41,8 @@ export const authController = {
       id: userCheckLogin._id.toString(),
       email: userCheckLogin.email,
       fullName: userCheckLogin.fullName,
-      phone: userCheckLogin.phone
+      phone: userCheckLogin.phone,
+      avatar: userCheckLogin.avatar
     }
     const accessToken = authController.generateAccessToken(dataToken as IAuthConstants)
     const refreshToken = await authController.generateRefreshToken(dataToken as IAuthConstants)
