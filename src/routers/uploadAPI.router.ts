@@ -5,14 +5,7 @@ import { requireAuth } from '@/middlewares/auth.middlewares'
 
 const router = express.Router()
 
-router.post(
-  '/',
-  requireAuth,
-  upload.fields([
-    { name: 'image', maxCount: 1 },
-    { name: 'avatar', maxCount: 1 }
-  ]),
-  uploadController.uploadImage
-)
+router.post('/avatar', requireAuth, upload.single('avatar'), uploadController.uploadImage)
 
+router.post('/image', requireAuth, upload.single('image'), uploadController.uploadImage)
 export const routerUpload = router

@@ -44,7 +44,9 @@ export const uploadController = {
 
       res.status(HttpStatus.OK).json({
         message: 'Uploaded successfully',
-        image: result.secure_url
+        data: {
+          image: result.secure_url
+        }
       })
     } catch (error) {
       console.error('Upload error:', error)

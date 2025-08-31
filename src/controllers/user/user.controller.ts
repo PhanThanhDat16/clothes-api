@@ -137,7 +137,8 @@ export const userController = {
       return
     }
     res.status(HttpStatus.OK).json({
-      message: 'Get category successfully'
+      message: 'Get user successfully',
+      data: user
     })
   }),
 
