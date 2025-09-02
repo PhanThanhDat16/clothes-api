@@ -35,8 +35,42 @@ export const itemService = {
     }
   },
 
-  getAllItemsWithOptions: async () => {
-    const items = await Item.find().lean()
+  // getAllItemsWithOptions: async () => {
+  //   const items = await Item.find().populate('categoryId', 'name').lean()
+  //   const itemIds = items.map((item) => item._id)
+  //   const options = await ItemSize.find({ itemId: { $in: itemIds } }).lean()
+
+  //   const optionsMap = new Map<string, { size: string; stockQuantity: number }[]>()
+  //   for (const opt of options) {
+  //     if (opt.itemId) {
+  //       const list = optionsMap.get(opt.itemId.toString()) || []
+  //       list.push({ size: opt.size, stockQuantity: opt.stockQuantity })
+  //       optionsMap.set(opt.itemId.toString(), list)
+  //     }
+  //   }
+
+  //   return items.map((item) => ({
+  //     ...item,
+  //     options: optionsMap.get(item._id.toString()) || []
+  //   }))
+  // },
+
+  getAllItemsWithOptions: async (page: number, limit: number, search?: string) => {
+    const query: any = {}
+    if (search) {
+      query.$or = [{ name: { $regex: search, $options: 'i' } }, { description: { $regex: search, $options: 'i' } }]
+    }
+
+    const skip = (page - 1) * limit
+    const total = await Item.countDocuments(query)
+
+    const items = await Item.find(query)
+      .populate('categoryId', 'name')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean()
+
     const itemIds = items.map((item) => item._id)
     const options = await ItemSize.find({ itemId: { $in: itemIds } }).lean()
 
@@ -49,10 +83,18 @@ export const itemService = {
       }
     }
 
-    return items.map((item) => ({
+    const itemsWithOptions = items.map((item) => ({
       ...item,
       options: optionsMap.get(item._id.toString()) || []
     }))
+
+    return {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+      data: itemsWithOptions
+    }
   },
 
   findByCategoryId: async (categoryId: string) => {

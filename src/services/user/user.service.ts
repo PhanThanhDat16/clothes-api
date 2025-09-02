@@ -49,7 +49,7 @@ export const userService = {
   getAll: async (page: number, limit: number, search?: string) => {
     const query: any = {}
     if (search) {
-      query.name = { $regex: `^${search}`, $options: 'i' }
+      query.fullName = { $regex: `^${search}`, $options: 'i' }
     }
     const skip = (page - 1) * limit
     const total = await User.countDocuments({ ...query, type: { $ne: 'admin' } })

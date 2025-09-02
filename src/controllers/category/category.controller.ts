@@ -112,5 +112,14 @@ export const categoryController = {
         ...result
       }
     })
+  }),
+
+  getAllCategoryAll: asyncHandler(async (req: Request, res: Response) => {
+    const result = await categoryService.getAllCategoryAll()
+
+    res.status(HttpStatus.OK).json({
+      message: 'Get all category successfully',
+      data: result
+    })
   })
 }

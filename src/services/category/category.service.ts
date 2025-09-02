@@ -45,5 +45,9 @@ export const categoryService = {
       totalPages: Math.ceil(total / limit),
       data: categories
     }
+  },
+
+  getAllCategoryAll: async () => {
+    return await Category.find({ status: 'active' }).lean()
   }
 }
