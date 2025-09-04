@@ -142,24 +142,6 @@ export const userController = {
     })
   }),
 
-  // feature/develop-login-google
-  currentUser: asyncHandler(async (req: RequestWithUser, res: Response) => {
-    if (!req.user) {
-      res.status(HttpStatus.UNAUTHORIZED).json({
-        message: 'User not authenticated'
-      })
-      return
-    }
-    // Fix: Remove reference to Express.User, use a safer type assertion
-    const userWithId = req.user as { id: string }
-    const user = await userService.getUserById(userWithId.id);
-
-    res.status(HttpStatus.OK).json({
-      message: 'Get current user successfully',
-      data: user
-    })
-  }),
-
   deleteUser: asyncHandler(async (req: Request, res: Response) => {
     const userId = req.params.id
     if (!userId) {
