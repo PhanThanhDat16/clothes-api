@@ -5,8 +5,9 @@ import { requireAuth } from '@/middlewares/auth.middlewares'
 const router = express.Router()
 
 router.post('/', requireAuth, categoryController.createCategory)
+router.get('/all', categoryController.getAllCategoryAll)
 router.get('/:id', requireAuth, categoryController.getCategoryDetail)
-router.get('/', requireAuth, categoryController.getAllCategory)
+router.get('/', categoryController.getAllCategory)
 router.delete('/:id', requireAuth, categoryController.deleteCategory)
 router.put('/:id', requireAuth, categoryController.updateCategory)
 

@@ -46,12 +46,22 @@ export const itemController = {
     res.status(HttpStatus.OK).json({ message: 'Get item detail successfully', data: item })
   }),
 
+  // getAllItem: asyncHandler(async (req: Request, res: Response) => {
+  //   const page = Number(req.query.page) || 1
+  //   const limit = Number(req.query.limit) || 10
+  //   const search = (req.query.search as string) || ''
+  //   const items = await itemService.getAllItemsWithOptions(Number(page), Number(limit), String(search))
+  //   const response = items.map((item) => ({ ...item }))
+
+  //   res.status(HttpStatus.OK).json({ message: 'Get all item successfully', data: response })
+  // }),
   getAllItem: asyncHandler(async (req: Request, res: Response) => {
-    const items = await itemService.getAllItemsWithOptions()
+    const page = Number(req.query.page) || 1
+    const limit = Number(req.query.limit) || 10
+    const search = (req.query.search as string) || ''
+    const result = await itemService.getAllItemsWithOptions(Number(page), Number(limit), String(search))
 
-    const response = items.map((item) => ({ item }))
-
-    res.status(HttpStatus.OK).json({ message: 'Get all item successfully', data: response })
+    res.status(HttpStatus.OK).json({ message: 'Get all item successfully', data: { ...result } })
   }),
 
   deleteItem: asyncHandler(async (req: Request, res: Response) => {
