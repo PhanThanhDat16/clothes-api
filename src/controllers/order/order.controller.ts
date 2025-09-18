@@ -162,7 +162,9 @@ export const orderController = {
 
   getOrderDetail: asyncHandler(async (req: Request, res: Response) => {
     const orderId = req.params.id
-    const order = await Order.findById(orderId).populate('userId', 'name email').populate('voucherId', 'code discount')
+    const order = await Order.findById(orderId)
+      .populate('userId', 'name email fullName')
+      .populate('voucherId', 'code discount')
     if (!order) {
       res.status(HttpStatus.BAD_REQUEST).json({ message: 'Order does not exist' })
       return
@@ -179,7 +181,7 @@ export const orderController = {
       })
     )
 
-    const user = order?.userId as unknown as { _id: string; name: string; email: string }
+    const user = order?.userId as unknown as { _id: string; name: string; email: string; fullName: string }
     const voucher =
       order.voucherId === null ? 0 : (order.voucherId as unknown as { _id: string; code: string; discount: number })
 
@@ -192,6 +194,7 @@ export const orderController = {
       userId: order.userId?._id,
       name: user.name,
       email: user.email,
+      fullName: user.fullName,
       voucherId: order.voucherId?._id || null,
       code: voucher !== 0 ? voucher.code : 0,
       discount,
@@ -239,7 +242,7 @@ export const orderController = {
         return {
           _id: order._id,
           userId: user && typeof user !== 'boolean' ? user._id : undefined,
-          fullName: user && 'fullName' in user ? user.fullName : undefined,
+          fullName: user ? user.fullName : undefined,
           email: user && typeof user !== 'boolean' ? user.email : undefined,
           totalPrice: order.totalPrice,
           finalTotal: order.finalTotal,

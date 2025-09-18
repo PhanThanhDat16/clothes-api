@@ -15,17 +15,26 @@ export const setupSocket = (server: http.Server) => {
   io.on('connection', (socket) => {
     console.log('🟢 A user connected:', socket.id)
 
-    // JOIN USER
-    socket.on('join-user', (userId) => {
-      socket.join(userId)
-      console.log(`User ${userId} joined room ${userId}`)
+    // USER JOIN ROOM
+    socket.on('join-conversation', (conversationId: string) => {
+      socket.join(conversationId)
+      console.log(`User joined conversation ${conversationId}`)
     })
 
-    // JOIN ADMIN
-    socket.on('join-admin', () => {
+    // ADMIN JOIN ROOM
+    socket.on('join-admin', (conversationIds: string[]) => {
       socket.join('admin')
-      console.log(`Admin joined room admin`)
+      console.log('Admin joined admin room')
+
+      conversationIds.forEach((id) => {
+        socket.join(id)
+        console.log(`Admin joined conversation ${id}`)
+      })
     })
+
+    // socket.on('newConversation', ({ conversationId }) => {
+    //   socket.emit('join-conversation', conversationId)
+    // })
 
     // CREATE ORDER - CLIENT
     socket.on('createOrder', async (orderData) => {
