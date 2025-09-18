@@ -59,7 +59,13 @@ export const itemController = {
     const page = Number(req.query.page) || 1
     const limit = Number(req.query.limit) || 10
     const search = (req.query.search as string) || ''
-    const result = await itemService.getAllItemsWithOptions(Number(page), Number(limit), String(search))
+    const categoryId = (req.query.categoryId as string) || ''
+    const result = await itemService.getAllItemsWithOptions(
+      Number(page),
+      Number(limit),
+      String(search),
+      String(categoryId)
+    )
 
     res.status(HttpStatus.OK).json({ message: 'Get all item successfully', data: { ...result } })
   }),
@@ -106,7 +112,7 @@ export const itemController = {
     const data = req.body
     const { name, description, price, oldPrice, categoryId, images, options } = data
 
-    const validation = itemValidation.validateCreate({ name, description, price, oldPrice, images })
+    const validation = itemValidation.validateCreate({ name, description, price, oldPrice })
     if (Object.keys(validation).length > 0) {
       res.status(HttpStatus.BAD_REQUEST).json({ message: 'Validation error', errors: validation })
       return

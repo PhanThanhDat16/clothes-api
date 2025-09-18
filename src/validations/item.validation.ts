@@ -7,7 +7,6 @@ export const itemValidation = {
       description?: string
       price?: string
       oldPrice?: string
-      images?: string
     } = {}
 
     if (!data.name || data.name.trim() === '') {
@@ -21,10 +20,6 @@ export const itemValidation = {
     }
     if (!data.oldPrice) {
       errors.oldPrice = 'oldPrice is required'
-    }
-
-    if (!data.images || data.images.length === 0) {
-      errors.images = 'please upload image'
     }
     return errors
   }

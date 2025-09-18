@@ -55,10 +55,14 @@ export const itemService = {
   //   }))
   // },
 
-  getAllItemsWithOptions: async (page: number, limit: number, search?: string) => {
+  getAllItemsWithOptions: async (page: number, limit: number, search?: string, categoryId?: string) => {
     const query: any = {}
     if (search) {
       query.$or = [{ name: { $regex: search, $options: 'i' } }, { description: { $regex: search, $options: 'i' } }]
+    }
+
+    if (categoryId && categoryId.trim() !== '') {
+      query.categoryId = categoryId
     }
 
     const skip = (page - 1) * limit
