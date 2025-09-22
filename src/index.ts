@@ -23,6 +23,9 @@ import connectMongoDB from './config/mongoose.config'
 import { setupSocket } from './socket/socket'
 import { routerNotification } from './routers/notificationAPI.router'
 import { HttpStatus } from './constants/http.constants'
+import { routerConversation } from './routers/conversation.router'
+import { routerMessage } from './routers/message.router'
+import { routerDashboard } from './routers/dashboard.router'
 
 dotenv.config()
 
@@ -50,10 +53,14 @@ app.use('/api/cart', routerCart)
 app.use('/api/orders', routerOrder)
 app.use('/api/vouchers', routerVoucher)
 app.use('/api/notifications', routerNotification)
+app.use('/api/conversations', routerConversation)
+app.use('/api/messages', routerMessage)
 app.use('/api/upload', routerUpload)
+app.use('/api/dashboard', routerDashboard)
 
 app.use(passport.initialize())
 initPassport(passport)
+
 app.use('/api/auth/', authLoginGoogleRoute)
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({

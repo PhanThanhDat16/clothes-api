@@ -4,9 +4,9 @@ import { requireAuth } from '@/middlewares/auth.middlewares'
 
 const router = express.Router()
 
-router.post('/', requireAuth, orderController.createOrder)
+router.post('/', orderController.createOrder)
 router.get('/:id', requireAuth, orderController.getOrderDetail)
-router.get('/', requireAuth, orderController.getAllOrder)
+router.get('/', orderController.getAllOrder)
 router.put('/:id', requireAuth, orderController.updateOrder)
 router.delete('/:id', requireAuth, orderController.deleteOrder)
 
