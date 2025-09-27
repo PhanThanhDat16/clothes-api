@@ -10,7 +10,7 @@ export const dashboardController = {
     const startOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1)
     const endOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0)
 
-    // ==== 1. Tổng tiền ====
+    // Total Price
     const todayOrder = await Order.aggregate([
       { $match: { createdAt: { $gte: startOfToday } } },
       { $group: { _id: null, total: { $sum: '$finalTotal' } } }
@@ -26,15 +26,13 @@ export const dashboardController = {
       { $group: { _id: null, total: { $sum: '$finalTotal' } } }
     ])
 
-    // ==== 2. Thống kê đơn ====
     const totalOrder = await Order.countDocuments()
     const orderPending = await Order.countDocuments({ status: 'pending' })
     const orderCancelled = await Order.countDocuments({ status: 'cancelled' })
-    const orderSuccess = await Order.countDocuments({ status: 'paid' })
+    const orderPaid = await Order.countDocuments({ status: 'paid' })
 
-    // ==== 3. Chart ====
-
-    // Line chart: thống kê theo từng ngày trong tháng hiện tại
+    //  Chart
+    // Line chart: statistics by day in the current month
     const lineChartAgg = await Order.aggregate([
       {
         $match: {
@@ -66,7 +64,7 @@ export const dashboardController = {
       return found ? found.totalRevenue : 0
     })
 
-    // Doughnut chart: thống kê theo status
+    // Doughnut chart: status statistics
     const doughnutAgg = await Order.aggregate([
       {
         $group: {
@@ -82,7 +80,6 @@ export const dashboardController = {
       return found ? found.count : 0
     })
 
-    // ==== Response ====
     res.json({
       message: 'get dashboard successfully',
       data: {
@@ -95,7 +92,7 @@ export const dashboardController = {
           totalOrder,
           orderPending,
           orderCancelled,
-          orderSuccess
+          orderPaid
         },
         charts: {
           lineChart: {

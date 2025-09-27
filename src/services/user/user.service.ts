@@ -41,7 +41,7 @@ export const userService = {
   },
 
   updateTotalBill: async (userId: string) => {
-    await User.findByIdAndUpdate(userId, {
+    return await User.findByIdAndUpdate(userId, {
       $inc: { totalBill: 1 }
     })
   },

@@ -24,7 +24,10 @@ export const messageController = {
   getMessagesByConversation: asyncHandler(async (req: Request, res: Response) => {
     const { conversationId } = req.params
     const messages = await messageService.getMessagesByConversation(conversationId)
-    res.status(HttpStatus.OK).json(messages)
+    res.status(HttpStatus.OK).json({
+      message: 'get list successfully',
+      data: messages
+    })
   }),
 
   markAsRead: asyncHandler(async (req: Request, res: Response) => {
