@@ -6,9 +6,8 @@ const router = express.Router()
 
 router.get('/:id', requireAuth, cartController.getItemsInCartByUserId)
 router.post('/', requireAuth, cartController.addProductInCart)
+router.post('/:id', requireAuth, cartController.addProductInCart)
 router.put('/:id', requireAuth, cartController.updateProductInCart)
 router.delete('/:id', requireAuth, cartController.deleteProductInCart)
 
 export const routerCart = router
-
-// router.post('/:id', requireAuth, cartController.addProductInCart)

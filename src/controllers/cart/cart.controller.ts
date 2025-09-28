@@ -88,10 +88,31 @@ export const cartController = {
     })
   }),
 
+  // updateProductInCart: asyncHandler(async (req: Request, res: Response) => {
+  //   const data = req.body
+  //   const userId = req.params.id
+  //   const { itemId, size, quantity } = data
+  //   const existingCart = await cartService.findOne(userId)
+  //   if (!existingCart) {
+  //     res.status(HttpStatus.BAD_REQUEST).json({
+  //       message: 'Cart does not exist'
+  //     })
+  //     return
+  //   }
+
+  //   const existingCartItem = await cartItemService.findOne(existingCart._id.toString(), itemId, size)
+  //   let updatedCartItem
+  //   if (existingCartItem) {
+  //     updatedCartItem = await cartItemService.updateQuantity(existingCartItem._id.toString(), quantity)
+  //   }
+
+  //   res.status(HttpStatus.OK).json({ message: 'updated successfully', data: updatedCartItem })
+  // })
   updateProductInCart: asyncHandler(async (req: Request, res: Response) => {
     const data = req.body
     const userId = req.params.id
     const { itemId, size, quantity } = data
+
     const existingCart = await cartService.findOne(userId)
     if (!existingCart) {
       res.status(HttpStatus.BAD_REQUEST).json({
@@ -101,11 +122,33 @@ export const cartController = {
     }
 
     const existingCartItem = await cartItemService.findOne(existingCart._id.toString(), itemId, size)
-    let updatedCartItem
     if (existingCartItem) {
-      updatedCartItem = await cartItemService.updateQuantity(existingCartItem._id.toString(), quantity)
+      await cartItemService.updateQuantity(existingCartItem._id.toString(), quantity)
     }
 
-    res.status(HttpStatus.OK).json({ message: 'updated successfully', data: updatedCartItem })
+    const cartItems = await cartItemService.find(existingCart._id.toString())
+    const listCartItems = cartItems.map((item) => {
+      const itemData = item.itemId as IItemConstants
+      return {
+        _id: item._id,
+        itemId: item.itemId._id,
+        cartId: item.cartId,
+        size: item.size,
+        quantity: item.quantity,
+        item: {
+          name: itemData.name,
+          images: itemData.images?.[0],
+          price: itemData.price,
+          oldPrice: itemData.oldPrice,
+          description: itemData.description,
+          categoryId: itemData.categoryId
+        }
+      }
+    })
+
+    res.status(HttpStatus.OK).json({
+      message: 'updated successfully',
+      data: listCartItems
+    })
   })
 }
