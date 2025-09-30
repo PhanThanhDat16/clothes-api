@@ -52,6 +52,21 @@ export const cartController = {
     res.status(HttpStatus.OK).json({ message: 'Item removed from cart successfully', data: existingCartItem })
   }),
 
+  clearCart: asyncHandler(async (req: Request, res: Response) => {
+    const userId = req.params.id
+    const existingCart = await cartService.findOne(userId)
+    if (!existingCart) {
+      res.status(HttpStatus.NOT_FOUND).json({ message: 'Cart not found for user' })
+      return
+    }
+    // Xóa tất cả items trong giỏ hàng này
+    await cartItemService.deleteManyByCartId(existingCart._id.toString())
+    res.status(HttpStatus.OK).json({
+      message: 'All items removed from cart successfully',
+      data: existingCart
+    })
+  }),
+
   getItemsInCartByUserId: asyncHandler(async (req: Request, res: Response) => {
     const userId = req.params.id
     const existingCart = await cartService.findOne(userId)

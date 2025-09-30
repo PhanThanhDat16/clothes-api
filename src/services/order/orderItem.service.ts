@@ -70,19 +70,20 @@ export const orderItemService = {
         $project: {
           _id: 1,
           totalOrders: 1,
-          itemName: '$itemDetails.name',
-          itemPrice: '$itemDetails.price',
-          itemDescription: '$itemDetails.description',
-          itemCategoryId: '$itemDetails.categoryId',
-          itemImages: '$itemDetails.images',
+          name: '$itemDetails.name',
+          price: '$itemDetails.price',
+          oldPrice: '$itemDetails.oldPrice',
+          description: '$itemDetails.description',
+          categoryId: '$itemDetails.categoryId',
+          images: '$itemDetails.images',
           options: {
             $map: {
               input: '$itemSizes',
               as: 'size',
               in: {
-                itemId: '$_id',
-                itemSize: '$$size.size',
-                itemStockQuantity: '$$size.stockQuantity'
+                _id: '$_id',
+                size: '$$size.size',
+                stockQuantity: '$$size.stockQuantity'
               }
             }
           }

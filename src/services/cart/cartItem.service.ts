@@ -1,5 +1,6 @@
 import { CartItem } from '@/models/cart-item.model'
 import { EStatusItemSize } from '@/constants/item.constants'
+import { Cart } from '@/models/cart.model'
 
 export const cartItemService = {
   findOne: async (cartId: string, itemId: string, size: EStatusItemSize) => {
@@ -21,6 +22,12 @@ export const cartItemService = {
 
   deleteOne: async (cartItemId: string) => {
     return await CartItem.deleteOne({ _id: cartItemId })
+  },
+
+  deleteManyByCartId: async (cartItemId: string) => {
+    const cartDelete = await Cart.findByIdAndDelete(cartItemId)
+    await CartItem.deleteMany({ cartItemId })
+    return cartDelete
   },
 
   find: async (cartId: string) => {
