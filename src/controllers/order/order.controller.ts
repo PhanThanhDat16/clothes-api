@@ -209,64 +209,63 @@ export const orderController = {
     })
   }),
 
-// <<<<<<< feature/develop-order
+  // <<<<<<< feature/develop-order
   getOrderDetailByUser: asyncHandler(async (req: Request, res: Response) => {
-  const userid = req.params.id;
+    const userid = req.params.id
 
-  const orders = await Order.find({ userId: userid })
-    .populate('userId', 'name email fullName')
-    .populate('voucherId', 'code discount');
+    const orders = await Order.find({ userId: userid })
+      .populate('userId', 'name email fullName')
+      .populate('voucherId', 'code discount')
 
-  if (!orders || orders.length === 0) {
-    res.status(HttpStatus.BAD_REQUEST).json({ message: 'No orders found for this user' });
-    return;
-  }
+    if (!orders || orders.length === 0) {
+      res.status(HttpStatus.BAD_REQUEST).json({ message: 'No orders found for this user' })
+      return
+    }
 
-  const fullOrders = await Promise.all(
-    orders.map(async (order) => {
-      const orderItems = await orderItemService.findItems(order.id.toString());
-      const detailedItems = await Promise.all(
-        orderItems.map(async (orderItem) => {
-          const itemDetail = orderItem.itemId ? await itemService.findById(orderItem.itemId.toString()) : null;
-          return {
-            ...orderItem.toObject(),
-            itemDetail
-          };
-        })
-      );
+    const fullOrders = await Promise.all(
+      orders.map(async (order) => {
+        const orderItems = await orderItemService.findItems(order.id.toString())
+        const detailedItems = await Promise.all(
+          orderItems.map(async (orderItem) => {
+            const itemDetail = orderItem.itemId ? await itemService.findById(orderItem.itemId.toString()) : null
+            return {
+              ...orderItem.toObject(),
+              itemDetail
+            }
+          })
+        )
 
-      const user = order?.userId as unknown as { _id: string; name: string; email: string; fullName: string };
-      const voucher = order.voucherId === null
-        ? 0
-        : (order.voucherId as unknown as { _id: string; code: string; discount: number });
+        const user = order?.userId as unknown as { _id: string; name: string; email: string; fullName: string }
+        const voucher =
+          order.voucherId === null ? 0 : (order.voucherId as unknown as { _id: string; code: string; discount: number })
 
-      const discount = voucher !== 0 ? voucher.discount : 0;
-      const totalPrice = order.totalPrice || 0;
-      const finalTotal = Math.round(totalPrice - (totalPrice * discount) / 100);
+        const discount = voucher !== 0 ? voucher.discount : 0
+        const totalPrice = order.totalPrice || 0
+        const finalTotal = Math.round(totalPrice - (totalPrice * discount) / 100)
 
-      return {
-        ...order.toObject(),
-        userId: order.userId?._id,
-        name: user.name,
-        email: user.email,
-        fullName: user.fullName,
-        voucherId: order.voucherId?._id || null,
-        code: voucher !== 0 ? voucher.code : 0,
-        discount,
-        totalPrice,
-        finalTotal,
-        items: detailedItems
-      };
+        return {
+          ...order.toObject(),
+          userId: order.userId?._id,
+          name: user.name,
+          email: user.email,
+          fullName: user.fullName,
+          voucherId: order.voucherId?._id || null,
+          code: voucher !== 0 ? voucher.code : 0,
+          discount,
+          totalPrice,
+          finalTotal,
+          items: detailedItems
+        }
+      })
+    )
+
+    res.status(HttpStatus.OK).json({
+      message: 'Get user orders successfully',
+      data: fullOrders
     })
-  );
-
-  res.status(HttpStatus.OK).json({
-    message: 'Get user orders successfully',
-    data: fullOrders
-  });
   }),
 
-// =======
+  // =======
   // getAllOrder: asyncHandler(async (req: Request, res: Response) => {
   //   const page = parseInt(req.query.page as string) || 1
   //   const limit = parseInt(req.query.limit as string) || 10
@@ -321,7 +320,7 @@ export const orderController = {
 
   //   res.status(HttpStatus.OK).json({ message: 'Get all order successfully', data: result })
   // }),
-// >>>>>>> develop
+  // >>>>>>> develop
 
   getAllOrder: asyncHandler(async (req: Request, res: Response) => {
     const page = parseInt(req.query.page as string) || 1
