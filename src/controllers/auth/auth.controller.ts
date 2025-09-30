@@ -13,6 +13,7 @@ import { authValidation } from '@/validations/auth.validation'
 // Services
 import { authService } from '@/services/auth/auth.service'
 import { refreshTokenService } from '@/services/refreshToken/refreshToken.service'
+import { userInfo } from 'os'
 
 export const authController = {
   login: asyncHandler(async (req: Request, res: Response) => {
@@ -50,7 +51,8 @@ export const authController = {
       message: 'Login successfulfly',
       data: {
         accessToken,
-        refreshToken
+        refreshToken,
+        dataToken
       }
     })
   }),
