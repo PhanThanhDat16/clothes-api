@@ -12,7 +12,7 @@ interface AuthenticatedRequest extends Request {
   }
 }
 
-export const googleCallback = (req: AuthenticatedRequest, res: Response) => {
+export const googleCallback = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const user = req.user
     if (!user) {
@@ -31,8 +31,8 @@ export const googleCallback = (req: AuthenticatedRequest, res: Response) => {
       avatar: user.avatar || ''
     }
 
-    const accessToken = authController.generateAccessToken(value)
-    const refreshToken = authController.generateRefreshToken(value)
+    const accessToken = await authController.generateAccessToken(value);
+    const refreshToken = await authController.generateRefreshToken(value);
 
     // Redirect về frontend + kèm token
     res.redirect(`${process.env.URL_CLIENT}/auth/success?accessToken=${accessToken}&refreshToken=${refreshToken}`)
