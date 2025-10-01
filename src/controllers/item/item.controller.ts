@@ -70,18 +70,6 @@ export const itemController = {
     res.status(HttpStatus.OK).json({ message: 'Get all item successfully', data: { ...result } })
   }),
 
-  deleteItem: asyncHandler(async (req: Request, res: Response) => {
-    const itemId = req.params.id
-    const item = await itemService.findById(itemId)
-    if (!item) {
-      res.status(HttpStatus.NOT_FOUND).json({ message: 'Item not found' })
-      return
-    }
-    const itemDelete = await itemService.deleteById(itemId)
-
-    res.status(HttpStatus.OK).json({ message: 'Item deleted successfully', data: itemDelete })
-  }),
-
   getAllItemByCategoryId: asyncHandler(async (req: Request, res: Response) => {
     const categoryId = req.params.id
     const items = await itemService.findByCategoryId(categoryId)
@@ -105,6 +93,18 @@ export const itemController = {
     )
 
     res.status(HttpStatus.OK).json({ message: 'Get all item successfully', data: itemsWithOptions })
+  }),
+
+  deleteItem: asyncHandler(async (req: Request, res: Response) => {
+    const itemId = req.params.id
+    const item = await itemService.findById(itemId)
+    if (!item) {
+      res.status(HttpStatus.NOT_FOUND).json({ message: 'Item not found' })
+      return
+    }
+    const itemDelete = await itemService.deleteById(itemId)
+
+    res.status(HttpStatus.OK).json({ message: 'Item deleted successfully', data: itemDelete })
   }),
 
   updateItem: asyncHandler(async (req: Request, res: Response) => {
