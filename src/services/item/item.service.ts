@@ -116,5 +116,37 @@ export const itemService = {
   updateById: async (itemId: string, data: IItemModelConstants) => {
     const updatedItem = await Item.findByIdAndUpdate(itemId, { $set: data }, { new: true }).lean()
     return updatedItem
+  },
+
+  searchItem: async(query: string) => {
+    try {
+      if(!query){
+        return [];
+      }
+      const products = await Item.find({
+        name: { $regex: query as string, $options: "i" }
+      }).limit(20).lean();
+
+      const itemIds = products.map((item) => item._id)
+      const options = await ItemSize.find({ itemId: { $in: itemIds } }).lean()
+      const optionsMap = new Map<string, { size: string; stockQuantity: number }[]>()
+
+      for (const opt of options) {
+
+      if (opt.itemId) {
+        const list = optionsMap.get(opt.itemId.toString()) || []
+        list.push({ size: opt.size, stockQuantity: opt.stockQuantity })
+        optionsMap.set(opt.itemId.toString(), list)
+        }
+      }
+      const itemSearch = products.map((item) => ({
+        ...item,
+        options: optionsMap.get(item._id.toString()) || []
+      }))
+      return itemSearch;
+    } catch (error) {
+      console.log("error at search product: ",error);
+      return null; 
+    }
   }
 }

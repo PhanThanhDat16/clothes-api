@@ -408,7 +408,7 @@ export const orderController = {
     )
     await orderItemService.deleteItemsByOrderId(orderId)
     const result = await orderService.deleteById(orderId)
-    res.status(HttpStatus.BAD_REQUEST).json({
+    res.status(HttpStatus.OK).json({
       message: 'deleted successfully',
       data: result
     })

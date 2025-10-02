@@ -17,6 +17,7 @@ const itemSchema = new mongoose.Schema(
 )
 
 export const Item = mongoose.model('Item', itemSchema)
+itemSchema.index({name: "text", description: "text"})
 
 export interface IItem extends Document {
   name?: string

@@ -166,5 +166,25 @@ export const itemController = {
   getItemTopPopular: asyncHandler(async (req: Request, res: Response) => {
     const result = await orderItemService.orderItemAggregate()
     res.status(HttpStatus.OK).json({ success: 'Get item popular successfully', data: result })
+  }),
+
+  searchItem: asyncHandler(async(req: Request, res: Response) => {
+    const query = req.params.s || "";
+    const items = await itemService.searchItem(query);
+
+    if(!items){
+      res.status(HttpStatus.NOT_FOUND).json({
+        status: "Failed",
+        message: `Not found any item with: ${query}`,
+        data: []
+      });
+    }
+
+    res.status(HttpStatus.OK).json({
+      status: "Success",
+      count: items?.length,
+      message: "Search product success",
+      data: items
+    })
   })
 }
