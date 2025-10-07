@@ -77,5 +77,10 @@ export const userService = {
   getDetail: async (userId: string) => {
     const user = await User.findById(userId).select('-password').lean()
     return user
+  },
+
+  findUserAdmin: async () => {
+    const listAdmin = await User.find({ type: 'admin' }).distinct('_id')
+    return listAdmin
   }
 }

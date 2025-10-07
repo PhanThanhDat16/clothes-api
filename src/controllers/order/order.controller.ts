@@ -209,7 +209,6 @@ export const orderController = {
     })
   }),
 
-  // <<<<<<< feature/develop-order
   getOrderDetailByUser: asyncHandler(async (req: Request, res: Response) => {
     const userid = req.params.id
 
@@ -264,63 +263,6 @@ export const orderController = {
       data: fullOrders
     })
   }),
-
-  // =======
-  // getAllOrder: asyncHandler(async (req: Request, res: Response) => {
-  //   const page = parseInt(req.query.page as string) || 1
-  //   const limit = parseInt(req.query.limit as string) || 10
-
-  //   const orders = await orderService.finAllOrder(page, limit)
-  //   const result = await Promise.all(
-  //     orders.map(async (order) => {
-  //       const user = order?.userId ? await userService.getUserById(order.userId.toString()) : null
-  //       const voucher = order?.voucherId ? await voucherService.findById(order.voucherId.toString()) : null
-  //       const orderItems = await orderItemService.findItemsLean(order._id.toString())
-
-  //       const detailedItems = await Promise.all(
-  //         orderItems.map(async (oi) => {
-  //           const item = await itemService.findById(oi.itemId?.toString() ?? '')
-  //           return {
-  //             _id: oi._id,
-  //             itemId: {
-  //               _id: item?._id,
-  //               name: item?.name,
-  //               description: item?.description,
-  //               price: item?.price,
-  //               images: item?.images,
-  //               categoryId: item?.categoryId
-  //             },
-  //             size: oi.size,
-  //             quantity: oi.quantity,
-  //             price: oi.price,
-  //             createdAt: oi.createdAt,
-  //             updatedAt: oi.updatedAt
-  //           }
-  //         })
-  //       )
-
-  //       return {
-  //         _id: order._id,
-  //         userId: user && typeof user !== 'boolean' ? user._id : undefined,
-  //         fullName: user ? user.fullName : undefined,
-  //         email: user && typeof user !== 'boolean' ? user.email : undefined,
-  //         totalPrice: order.totalPrice,
-  //         finalTotal: order.finalTotal,
-  //         status: order.status,
-  //         voucherId: voucher?._id,
-  //         code: voucher?.code,
-  //         discountPercent: voucher?.discountPercent,
-  //         discount: order.discount,
-  //         createdAt: order.createdAt,
-  //         updatedAt: order.updatedAt,
-  //         orderItems: detailedItems
-  //       }
-  //     })
-  //   )
-
-  //   res.status(HttpStatus.OK).json({ message: 'Get all order successfully', data: result })
-  // }),
-  // >>>>>>> develop
 
   getAllOrder: asyncHandler(async (req: Request, res: Response) => {
     const page = parseInt(req.query.page as string) || 1

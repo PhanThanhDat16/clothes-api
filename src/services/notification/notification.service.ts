@@ -5,7 +5,6 @@ export const notificationService = {
   createNoti: async (data: INotificationConstants) => {
     const noti = await Notification.create({
       userId: data.userId,
-      orderId: data.orderId,
       message: data.message,
       isRead: data.isRead
     })

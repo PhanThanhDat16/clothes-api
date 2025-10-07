@@ -1,6 +1,7 @@
 import { Server } from 'socket.io'
 import http from 'http'
 import { notificationService } from '@/services/notification/notification.service'
+import { userService } from '@/services/user/user.service'
 
 let io: Server
 
@@ -26,6 +27,11 @@ export const setupSocket = (server: http.Server) => {
       })
     })
 
+    socket.on('join-user', (userId) => {
+      console.log(`User ${socket.id} joined room ${userId}`)
+      socket.join(userId)
+    })
+
     // ADMIN JOIN ROOM
     socket.on('admin-room', () => {
       socket.join('admin-room')
@@ -41,16 +47,20 @@ export const setupSocket = (server: http.Server) => {
     // CREATE ORDER - CLIENT
     socket.on('createOrder', async (orderData) => {
       try {
-        const noti = await notificationService.createNoti({
-          userId: orderData.userId,
-          orderId: orderData.orderId,
-          message: `User ${orderData.userName} just placed an order`,
-          isRead: false
-        })
+        const listAdmin = await userService.findUserAdmin()
 
-        io.to('admin').emit('newNotification', noti)
+        for (const admin of listAdmin) {
+          const adminId = admin._id ? admin._id.toString() : admin.toString()
+          const noti = await notificationService.createNoti({
+            userId: adminId,
+            message: `User ${orderData.userName} just placed an order`,
+            isRead: false
+          })
+
+          io.to(adminId.toString()).emit('newNotification', noti)
+        }
       } catch (err) {
-        console.error('❌ error handle createOrder:', err)
+        console.error('error handle createOrder:', err)
       }
     })
 
@@ -59,14 +69,15 @@ export const setupSocket = (server: http.Server) => {
       try {
         const noti = await notificationService.createNoti({
           userId: orderData.userId,
-          orderId: orderData.orderId,
           message: `Your order has been changed, please check.`,
           isRead: false
         })
 
+        console.log('hi')
+
         io.to(orderData.userId).emit('updateOrder', noti)
       } catch (err) {
-        console.error('❌ error handle updateOrder:', err)
+        console.error('error handle updateOrder:', err)
       }
     })
 

@@ -5,6 +5,12 @@ import { HttpStatus } from '@/constants/http.constants'
 import { notificationService } from '@/services/notification/notification.service'
 
 export const notificationController = {
+  createNotification: asyncHandler(async (req: Request, res: Response) => {
+    const data = req.body
+    const notification = await notificationService.createNoti(data)
+    res.status(HttpStatus.OK).json({ message: 'Create notification successfully', data: notification })
+  }),
+
   getDetail: asyncHandler(async (req: Request, res: Response) => {
     const notiId = req.params.id
 
@@ -30,7 +36,7 @@ export const notificationController = {
   }),
 
   updateReadAll: asyncHandler(async (req: Request, res: Response) => {
-    const userId = req.params.id
+    const { userId } = req.body
     const noti = await notificationService.updateReadAll(userId)
     if (!noti) {
       res.status(HttpStatus.NOT_FOUND).json({ message: 'userId not found' })
