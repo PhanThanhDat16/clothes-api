@@ -27,7 +27,8 @@ export const setupSocket = (server: http.Server) => {
       })
     })
 
-    socket.on('join-user', (userId) => {
+    socket.on('join-user', (data) => {
+      const { userId } = data
       console.log(`User ${socket.id} joined room ${userId}`)
       socket.join(userId)
     })
@@ -57,7 +58,7 @@ export const setupSocket = (server: http.Server) => {
             isRead: false
           })
 
-          io.to(adminId.toString()).emit('newNotification', noti)
+          io.to('admin-room').emit('newNotification', noti)
         }
       } catch (err) {
         console.error('error handle createOrder:', err)
@@ -67,15 +68,14 @@ export const setupSocket = (server: http.Server) => {
     // UPDATE ORDER - ADMIN
     socket.on('updateOrder', async (orderData) => {
       try {
+        const { userId } = orderData
         const noti = await notificationService.createNoti({
-          userId: orderData.userId,
+          userId: userId,
           message: `Your order has been changed, please check.`,
           isRead: false
         })
 
-        console.log('hi')
-
-        io.to(orderData.userId).emit('updateOrder', noti)
+        io.to(userId).emit('updateOrder', noti)
       } catch (err) {
         console.error('error handle updateOrder:', err)
       }
