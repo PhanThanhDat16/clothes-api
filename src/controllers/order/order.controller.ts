@@ -127,7 +127,7 @@ export const orderController = {
     const data = req.body
     const orderId = req.params.id
     const { status } = data
-    const validStatuses = ['pending', 'cancelled', 'paid']
+    const validStatuses = ['pending', 'cancelled', 'paid', 'confirmed']
     if (!validStatuses.includes(status)) {
       res.status(HttpStatus.BAD_REQUEST).json({ message: 'Invalid status' })
       return

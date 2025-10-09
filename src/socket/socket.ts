@@ -27,7 +27,8 @@ export const setupSocket = (server: http.Server) => {
       })
     })
 
-    socket.on('join-user', (userId) => {
+    socket.on('join-user', (data) => {
+      const { userId } = data
       console.log(`User ${socket.id} joined room ${userId}`)
       socket.join(userId)
     })
