@@ -8,7 +8,7 @@ import { itemSizeService } from '@/services/item/itemSize.service'
 import { orderService } from '@/services/order/order.service'
 import { orderItemService } from '@/services/order/orderItem.service'
 import { userService } from '@/services/user/user.service'
-import { userVoucherService } from '@/services/voucher/userVoucher.service'
+// import { userVoucherService } from '@/services/voucher/userVoucher.service'
 import { voucherService } from '@/services/voucher/voucher.service'
 
 // Constants
@@ -68,26 +68,29 @@ export const orderController = {
 
     await Promise.all(itemPromises)
 
+    // eslint-disable-next-line prefer-const
     let finalTotal = totalPrice
+    // eslint-disable-next-line prefer-const
     let discount = 0
+    // eslint-disable-next-line prefer-const
     let voucherId = null
 
-    if (voucherCode) {
-      const voucher = await voucherService.findOne(voucherCode)
-      if (voucher) {
-        const usedVoucher = await userVoucherService.findOne(userId, voucher._id.toString())
-        if (usedVoucher) {
-          res.status(HttpStatus.BAD_REQUEST).json({ message: 'Voucher has been used' })
-          return
-        }
-        discount = (totalPrice * (voucher.discountPercent as number)) / 100
-        finalTotal -= discount
-        voucherId = voucher._id.toString()
-      } else {
-        res.status(HttpStatus.BAD_REQUEST).json({ message: 'Voucher is invalid' })
-        return
-      }
-    }
+    // if (voucherCode) {
+    //   const voucher = await voucherService.findOne(voucherCode)
+    //   if (voucher) {
+    //     const usedVoucher = await userVoucherService.findOne(userId, voucher._id.toString())
+    //     if (usedVoucher) {
+    //       res.status(HttpStatus.BAD_REQUEST).json({ message: 'Voucher has been used' })
+    //       return
+    //     }
+    //     discount = (totalPrice * (voucher.discountPercent as number)) / 100
+    //     finalTotal -= discount
+    //     voucherId = voucher._id.toString()
+    //   } else {
+    //     res.status(HttpStatus.BAD_REQUEST).json({ message: 'Voucher is invalid' })
+    //     return
+    //   }
+    // }
 
     const order = await orderService.createOrder({
       userId,
@@ -96,7 +99,7 @@ export const orderController = {
       voucherId,
       discount,
       status: 'pending'
-    } as IOrderConstants)
+    } as unknown as IOrderConstants)
 
     const orderItemPromises = orderItems.map(async (orderItem) => {
       await orderItemService.createOrderItem({
@@ -110,9 +113,9 @@ export const orderController = {
 
     await Promise.all(orderItemPromises)
 
-    if (voucherId) {
-      await userVoucherService.updateVoucher(userId, voucherId)
-    }
+    // if (voucherId) {
+    //   await userVoucherService.updateVoucher(userId, voucherId)
+    // }
 
     res.status(HttpStatus.OK).json({
       message: 'Order created successfully',
@@ -269,7 +272,6 @@ export const orderController = {
     const limit = parseInt(req.query.limit as string) || 10
     const search = (req.query.search as string) || undefined
     const status = (req.query.status as string) || undefined
-    console.log(req.query)
 
     const { orders, pagination } = await orderService.finAllOrder(page, limit, { search, status })
 

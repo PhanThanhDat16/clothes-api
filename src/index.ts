@@ -5,7 +5,7 @@ import cors from 'cors'
 import morgan from 'morgan'
 import http from 'http'
 import initPassport from './config/passport.config'
-import passport, { Passport } from 'passport'
+import passport from 'passport'
 
 // Routers
 import { routerAuth } from './routers/authAPI.router'

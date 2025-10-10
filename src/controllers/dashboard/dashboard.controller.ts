@@ -272,18 +272,18 @@ export const dashboardController = {
     // === TOTAL PRICE ===
     const totalInRange = await Order.aggregate([
       {
-        $match: { createdAt: { $gte: filterStart, $lte: filterEnd } }
+        $match: { createdAt: { $gte: filterStart, $lte: filterEnd }, status: 'paid' }
       },
       { $group: { _id: null, total: { $sum: '$finalTotal' } } }
     ])
 
     const todayOrder = await Order.aggregate([
-      { $match: { createdAt: { $gte: startOfToday } } },
+      { $match: { createdAt: { $gte: startOfToday }, status: 'paid' } },
       { $group: { _id: null, total: { $sum: '$finalTotal' } } }
     ])
 
     const thisMonth = await Order.aggregate([
-      { $match: { createdAt: { $gte: startOfMonth } } },
+      { $match: { createdAt: { $gte: startOfMonth }, status: 'paid' } },
       { $group: { _id: null, total: { $sum: '$finalTotal' } } }
     ])
 

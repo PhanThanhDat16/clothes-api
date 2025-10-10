@@ -147,11 +147,6 @@ export const itemController = {
     const updatedItem = await itemService.findById(itemId)
     const updatedOptions = await itemSizeService.findByItemId(itemId)
 
-    if (!updatedItem) {
-      res.status(HttpStatus.NOT_FOUND).json({ message: 'Updated item not found' })
-      return
-    }
-
     const responseData = {
       ...updatedItem,
       options: updatedOptions.map((opt) => ({
