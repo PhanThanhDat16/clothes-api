@@ -13,7 +13,6 @@ import { authValidation } from '@/validations/auth.validation'
 // Services
 import { authService } from '@/services/auth/auth.service'
 import { refreshTokenService } from '@/services/refreshToken/refreshToken.service'
-import { userInfo } from 'os'
 
 export const authController = {
   login: asyncHandler(async (req: Request, res: Response) => {
@@ -83,7 +82,8 @@ export const authController = {
       // generate new accessToken
       const newAccessToken = authController.generateAccessToken(user as IAuthConstants)
       res.status(HttpStatus.OK).json({
-        accessToken: newAccessToken
+        accessToken: newAccessToken,
+        refreshToken: refreshToken
       })
       return
     })

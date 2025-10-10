@@ -297,6 +297,10 @@ export const dashboardController = {
       status: 'cancelled',
       createdAt: { $gte: filterStart, $lte: filterEnd }
     })
+    const orderConfirmed = await Order.countDocuments({
+      status: 'confirmed',
+      createdAt: { $gte: filterStart, $lte: filterEnd }
+    })
     const orderPaid = await Order.countDocuments({ status: 'paid', createdAt: { $gte: filterStart, $lte: filterEnd } })
 
     // === LINE CHART ===
@@ -334,7 +338,7 @@ export const dashboardController = {
       { $group: { _id: '$status', count: { $sum: 1 } } }
     ])
 
-    const defaultLabelsDoughnutChart = ['pending', 'cancelled', 'paid']
+    const defaultLabelsDoughnutChart = ['pending', 'cancelled', 'paid', 'confirmed']
     const doughnutChartData = defaultLabelsDoughnutChart.map((status) => {
       const found = doughnutAgg.find((d) => d._id === status)
       return found ? found.count : 0
@@ -352,6 +356,7 @@ export const dashboardController = {
           totalOrder,
           orderPending,
           orderCancelled,
+          orderConfirmed,
           orderPaid
         },
         charts: {
